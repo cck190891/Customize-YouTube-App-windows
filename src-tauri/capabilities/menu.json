@@ -1,0 +1,34 @@
+{
+    "$schema": "../gen/schemas/desktop-schema.json",
+    "identifier": "menu capability",
+    "description": "menu capability for the main window ",
+    "windows": [
+        "main*",
+        "*"
+    ],
+    "permissions": [
+        "menu:default",
+        "menu:allow-append",
+        "menu:allow-create-default",
+        "menu:allow-get",
+        "menu:allow-insert",
+        "menu:allow-is-checked",
+        "menu:allow-is-enabled",
+        "menu:allow-items",
+        "menu:allow-new",
+        "menu:allow-popup",
+        "menu:allow-prepend",
+        "menu:allow-remove",
+        "menu:allow-remove-at",
+        "menu:allow-set-accelerator",
+        "menu:allow-set-as-app-menu",
+        "menu:allow-set-as-help-menu-for-nsapp",
+        "menu:allow-set-as-window-menu",
+        "menu:allow-set-as-windows-menu-for-nsapp",
+        "menu:allow-set-checked",
+        "menu:allow-set-enabled",
+        "menu:allow-set-icon",
+        "menu:allow-set-text",
+        "menu:allow-text"
+    ]
+}

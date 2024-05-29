@@ -1,0 +1,47 @@
+{
+  "productName": "youtube",
+  "version": "1.0.1",
+  "identifier": "com.cck.youtube",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Controller",
+        "width": 800,
+        "height": 600,
+        "label": "Controller",
+        "visible": false
+      }
+    ],
+    "security": {
+      "assetProtocol": {
+        "enable": true,
+        "scope": {
+          "allow": [
+            "**",
+            "**/**"
+          ]
+        }
+      }
+    },
+    "withGlobalTauri": true
+  },
+  "bundle": {
+    "active": true,
+    "resources": [
+      "../src-tauri/icons/favicon.ico"
+    ],
+    "targets": "all",
+    "icon": [
+      "icons/icon_128.png",
+      "icons/icon_256.png",
+      "icons/icon.icns",
+      "icons/favicon.ico"
+    ]
+  }
+}

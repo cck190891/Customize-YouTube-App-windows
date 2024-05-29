@@ -1,0 +1,21 @@
+{
+    "$schema": "../gen/schemas/desktop-schema.json",
+    "identifier": "event capability",
+    "description": "event capability for the main window ",
+    "windows": [
+        "main*",
+        "*"
+    ],
+    "remote": {
+        "urls": [
+            "**://**"
+        ]
+    },
+    "permissions": [
+        "event:default",
+        "event:allow-emit",
+        "event:allow-emit-to",
+        "event:allow-listen",
+        "event:allow-unlisten"
+    ]
+}

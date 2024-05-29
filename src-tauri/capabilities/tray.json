@@ -1,0 +1,22 @@
+{
+    "$schema": "../gen/schemas/desktop-schema.json",
+    "identifier": "tray capability",
+    "description": "tray capability for the main window ",
+    "windows": [
+        "main*",
+        "*"
+    ],
+    "permissions": [
+        "tray:allow-get-by-id",
+        "tray:allow-new",
+        "tray:allow-remove-by-id",
+        "tray:allow-set-icon",
+        "tray:allow-set-icon-as-template",
+        "tray:allow-set-menu",
+        "tray:allow-set-show-menu-on-left-click",
+        "tray:allow-set-temp-dir-path",
+        "tray:allow-set-title",
+        "tray:allow-set-tooltip",
+        "tray:allow-set-visible"
+    ]
+}
