@@ -1,5 +1,5 @@
 
-import JSblock from './api/adblock';
+import JSblock from './api/eval';
 import { init_tray } from './api/trayicon';
 import html_result_listen from './api/listen';
 import { create_webviewwindow } from './api/utils/plugin-webview';
