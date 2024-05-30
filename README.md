@@ -1,7 +1,17 @@
-# Tauri + Preact + Typescript
+# Customize-YouTube(v1.0.1)
+This is a YouTube application for Windows built using <a href="https://github.com/tauri-apps/tauri">Tauri</a> (Rust + preact), implementing several convenient features (autoHD, adblock, hide to tray icon...). You can achieve different functionalities by modifying the JavaScript yourself.
 
-This template should help get you started developing with Tauri, Preact and Typescript in Vite.
+## Version 
+- Tauri v2.0.0.beta.20
 
-## Recommended IDE Setup
+## Command 
+- `pnpm install`
+- `pnpm tauri dev`
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+
+## Sponsor
+<a href='https://ko-fi.com/cck190891' className='ko-fi' target='_blank'>ko-fi</a><br/>
+<a href='https://www.paypal.com/paypalme/cck19089' className='paypal-me' target='_blank'>paypal</a>
+
+## License
+This package is open-sourced software licensed under the MIT license.
