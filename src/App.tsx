@@ -1,7 +1,7 @@
 
-import JSblock from './api/eval';
+import Setting from './Setting';
 import { init_tray } from './api/trayicon';
-import html_result_listen from './api/listen';
+import Listen_event from './api/listen';
 import { create_webviewwindow } from './api/utils/plugin-webview';
 
 
@@ -27,13 +27,13 @@ function App() {
 
 
   init_tray();
-  html_result_listen();
+  Listen_event();
   create_webviewwindow('https://www.youtube.com/')
   
   return (
     <>
       <button onClick={() => create_webviewwindow('https://www.youtube.com/')}>新分頁</button>
-      <JSblock></JSblock>
+      <Setting></Setting>
     </>
     );
 }

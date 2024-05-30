@@ -7,6 +7,7 @@ use tauri::Manager;
 async fn do_eval(webviews: tauri::Webview, label: String, jscode: String) {
     let webviewwindow = webviews.get_webview_window(&label).unwrap();
     let _ = webviewwindow.eval(&jscode);
+    // println!("{}: {}", label, jscode);
 }
 #[derive(Clone, serde::Serialize)]
 struct Payload {

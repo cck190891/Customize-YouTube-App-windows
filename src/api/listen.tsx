@@ -2,12 +2,21 @@ import { Window  } from '@tauri-apps/api/window'
 import { tray ,traymenu , Menu_hidecontroller ,Menu_showcontroller } from './trayicon'
 import { TauriEvent } from '@tauri-apps/api/event'
 import { MenuItem  } from "@tauri-apps/api/menu";
-
-export function html_result_listen() {
-    
+import { invoke } from '@tauri-apps/api/core';
+import {
+    sent_windows_info,
+    sent_pre_init,
+    sent_xhr_fetch, 
+    sent_adb_button_click, 
+    sent_disable_element, 
+    sent_nonstop, 
+    sent_hd1080,
+    sent_f11_event,
+    sent_MutationObserver_event
+} from './eval';
+export function Listen_event() {
         const controller_window = Window.getByLabel('Controller')!
         controller_window.listen('tauri://html-result', async(e : any) => {
-            if (e.payload.label == 'Controller') return
             let setWindow = Window.getByLabel(e.payload.label)!
             if (await setWindow.title() != e.payload.title){
                 setWindow.setTitle(e.payload.title)
@@ -35,6 +44,19 @@ export function html_result_listen() {
                 }
             }
         })
+        controller_window.listen('tauri://html-reload', async(e : any) => {
+            setTimeout(async() => {
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_windows_info(e.payload.label) });
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_pre_init() });
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_xhr_fetch() });
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_adb_button_click() });
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_disable_element() });
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_nonstop() });
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_hd1080() });
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_f11_event(e.payload.label) });
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_MutationObserver_event(e.payload.label) });
+            }, 1000);
+        })
         controller_window.listen("tauri://F11", async (e:any) => {
             const msg_window = Window.getByLabel(e.payload.label)!;
             if (await msg_window.isFullscreen()) {
@@ -42,6 +64,21 @@ export function html_result_listen() {
             }else{
                 await msg_window.setFullscreen(true);
             }
+        })        
+        
+        controller_window.listen("tauri://mutationObserver", async (e:any) => {
+            
+            if(localStorage.getItem("isAdBlockEnabled") === "true"){
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_adb_button_click() });
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_disable_element() });
+            }
+            if(localStorage.getItem("isNonstopEnabled") === "true"){
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_nonstop() });
+            }
+            if(localStorage.getItem("isAutohdEnabled") === "true"){
+                await invoke('do_eval', { label: e.payload.label, jscode: sent_hd1080() });
+            }
+
         })
 
         controller_window.listen("Controller://show", async () => {
@@ -52,7 +89,14 @@ export function html_result_listen() {
                 tray!.setMenu(traymenu)
             }
         })
+        controller_window.listen("Controller://create", async () => {
+            if (!(await controller_window.isVisible())){
 
+                traymenu!.remove(Menu_showcontroller!);
+                traymenu!.insert(Menu_hidecontroller!,(await traymenu!.items()).length-1);
+                tray!.setMenu(traymenu)
+            }
+        })
         controller_window.listen(TauriEvent.WINDOW_RESIZED, async (e:any) => {
             if (e.payload.height == 0 && e.payload.width == 0 ){
                 console.log('TauriEvent.WINDOW_RESIZED controller')
@@ -73,5 +117,5 @@ export function html_result_listen() {
         })
 }
 
-export default html_result_listen;
+export default Listen_event;
 
