@@ -1,7 +1,7 @@
 import { MenuItem, Menu } from "@tauri-apps/api/menu";
 import { TrayIcon } from "@tauri-apps/api/tray";
 import { Image } from '@tauri-apps/api/image';
-import { Window } from '@tauri-apps/api/window';
+import { Window , PhysicalSize } from '@tauri-apps/api/window';
 import { resolveResource } from "@tauri-apps/api/path";
 import { create_webviewwindow } from "./utils/plugin-webview";
 import { exit } from '@tauri-apps/plugin-process';
@@ -20,8 +20,11 @@ export async function init_tray() {
     text: 'Show Controller',
     enabled: true,
     action: async() => {
-      await Window.getByLabel('Controller')!.show();
-      await Window.getByLabel('Controller')!.setFocus();
+      const setWindow =Window.getByLabel('Controller')!
+      await setWindow.show();
+      await  setWindow.unminimize();
+
+      await setWindow.setFocus();
       traymenu!.remove(Menu_showcontroller!);
       traymenu!.insert(Menu_hidecontroller!,(await traymenu!.items()).length-1);
       console.log('show controller')

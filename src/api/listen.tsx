@@ -1,4 +1,4 @@
-import { Window  } from '@tauri-apps/api/window'
+import { Window ,PhysicalSize } from '@tauri-apps/api/window'
 import { tray ,traymenu , Menu_hidecontroller ,Menu_showcontroller } from './trayicon'
 import { TauriEvent } from '@tauri-apps/api/event'
 import { MenuItem  } from "@tauri-apps/api/menu";
@@ -7,6 +7,7 @@ export function html_result_listen() {
     
         const controller_window = Window.getByLabel('Controller')!
         controller_window.listen('tauri://html-result', async(e : any) => {
+            if (e.payload.label == 'Controller') return
             let setWindow = Window.getByLabel(e.payload.label)!
             if (await setWindow.title() != e.payload.title){
                 setWindow.setTitle(e.payload.title)
@@ -22,6 +23,7 @@ export function html_result_listen() {
                             enabled: true,
                             action: async() => {
                                 await  setWindow.show();
+                                await  setWindow.unminimize();
                                 await  setWindow.setFocus();
                                 traymenu!.remove(newmenu);
                             }
@@ -33,7 +35,6 @@ export function html_result_listen() {
                 }
 
             }
-            // console.log(await traymenu?.items()) id
         })
         
         controller_window.listen("Controller://show", async () => {

@@ -1,6 +1,6 @@
 
-import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
-// import { Window } from '@tauri-apps/api/window'
+import { WebviewWindow  } from '@tauri-apps/api/webviewWindow'
+import { PhysicalSize } from '@tauri-apps/api/window'
 import { TauriEvent } from '@tauri-apps/api/event'
 import { tray ,traymenu} from '../trayicon'
 import { MenuItem  } from "@tauri-apps/api/menu";
@@ -43,11 +43,9 @@ const create_webviewwindow =async (url:string,input_label='') => {
                 enabled: true,
                 action: async() => {
                     await  webview_window.show();
-                    console.log('show:')
-                    // setFocus has issue
-                    // cant bring this window to front
+                    await  webview_window.unminimize();
+
                     await  webview_window.setFocus();
-                    console.log('setFocus:')
 
                     traymenu!.remove(window_show);
                 }
