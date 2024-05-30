@@ -1,6 +1,6 @@
 [package]
 name = "youtube"
-version = "1.0.1"
+version = "1.0.2"
 description = "Customize a YouTube page using Tauri."
 authors = ["com.cck.youtube"]
 edition = "2021"

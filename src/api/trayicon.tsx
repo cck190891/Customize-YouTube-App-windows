@@ -1,7 +1,7 @@
 import { MenuItem, Menu } from "@tauri-apps/api/menu";
 import { TrayIcon } from "@tauri-apps/api/tray";
 import { Image } from '@tauri-apps/api/image';
-import { Window , PhysicalSize } from '@tauri-apps/api/window';
+import { Window  } from '@tauri-apps/api/window';
 import { resolveResource } from "@tauri-apps/api/path";
 import { create_webviewwindow } from "./utils/plugin-webview";
 import { exit } from '@tauri-apps/plugin-process';

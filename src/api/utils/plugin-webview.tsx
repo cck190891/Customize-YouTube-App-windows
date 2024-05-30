@@ -1,6 +1,5 @@
 
 import { WebviewWindow  } from '@tauri-apps/api/webviewWindow'
-import { PhysicalSize } from '@tauri-apps/api/window'
 import { TauriEvent } from '@tauri-apps/api/event'
 import { tray ,traymenu} from '../trayicon'
 import { MenuItem  } from "@tauri-apps/api/menu";

@@ -1,4 +1,4 @@
-# Customize-YouTube(v1.0.1)
+# Customize-YouTube(v1.0.2)
 This is a YouTube application for Windows built using <a href="https://github.com/tauri-apps/tauri">Tauri</a> (Rust + preact), implementing several convenient features (autoHD, adblock, hide to tray icon...). You can achieve different functionalities by modifying the JavaScript yourself.
 
 ## Version 

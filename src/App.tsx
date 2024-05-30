@@ -4,9 +4,7 @@ import { init_tray } from './api/trayicon';
 import html_result_listen from './api/listen';
 import { create_webviewwindow } from './api/utils/plugin-webview';
 
-// Issue: 
-// 1. webview setFocus has issue (plugin-webview.tsx)
-//    setFocus in trayicon.tsx is normal work but not in plugin-webview.tsx
+
 function App() {
 
   document.title = 'Controller'

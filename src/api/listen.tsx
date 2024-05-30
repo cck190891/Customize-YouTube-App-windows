@@ -1,4 +1,4 @@
-import { Window ,PhysicalSize } from '@tauri-apps/api/window'
+import { Window  } from '@tauri-apps/api/window'
 import { tray ,traymenu , Menu_hidecontroller ,Menu_showcontroller } from './trayicon'
 import { TauriEvent } from '@tauri-apps/api/event'
 import { MenuItem  } from "@tauri-apps/api/menu";
