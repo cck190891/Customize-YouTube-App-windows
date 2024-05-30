@@ -140,10 +140,10 @@ async function sent_disable_element() {
     `
         if (["m.youtube.com", "music.youtube.com", "tv.youtube.com", "www.youtube.com", "youtubekids.com", "youtube-nocookie.com"].includes(window.location.host)) {
           document.querySelectorAll('ytd-ad-slot-renderer').forEach(element => element.style.display = 'none');
-          document.querySelectorAll('.ytp-title-link.yt-uix-sessionlink.ytp-title-fullerscreen-link').forEach(element => element.style.display = 'none');
           document.querySelectorAll('ytd-player-legacy-desktop-watch-ads-renderer').forEach(element => element.style.display = 'none');
-          document.querySelectorAll('.ytp-fullerscreen-edu-button.ytp-button.ytp-fullerscreen-edu-button-subtle').forEach(element => element.style.display = 'none');
-
+          document.querySelectorAll('.ytp-fullerscreen-edu-button.ytp-button').forEach(element => element.style.display = 'none');
+          // document.querySelectorAll('.ytp-title-link.yt-uix-sessionlink.ytp-title-fullerscreen-link').forEach(element => element.style.display = 'none');
+          document.querySelectorAll('.ytp-chrome-top').forEach(element => element.style.display = 'none');
           
           const propertiesToUnset = [
             'ytInitialPlayerResponse.playerAds',
@@ -169,10 +169,6 @@ async function sent_disable_element() {
     await invoke('do_eval', { label: window.label, jscode: adb });
   });
 }
-
-
-
-
 
 
 async function sent_adb_button_click() {
@@ -221,13 +217,12 @@ await invoke('do_eval', { label: window.label, jscode: nonstop });
 
 
 
+
 export default function JSblock() {
     (async()=>{
       window.setInterval(async () => {
         await sent_windows_info();
-        await sent_hd1080();
       }, 2000);    
-    
     })()
     // ADblock
     const adintervalIdRef = useRef<number | null>(null);
@@ -240,7 +235,7 @@ export default function JSblock() {
                     await sent_adb_button_click();
                     await sent_xhr_fetch();
                     await sent_disable_element();
-                }, 1000);
+                }, 500);
                 adintervalIdRef.current = intervalId;
                 console.log('setInterval:', intervalId);
             } else {
@@ -286,8 +281,8 @@ export default function JSblock() {
         if (isAutohdEnabled) {
                 localStorage.setItem('isAutohdEnabled', 'true');
                 const intervalId = window.setInterval(async () => {
-                  await sent_nonstop();
-                }, 300000);
+                  await sent_hd1080();
+                }, 30000);
                 autohdintervalIdRef.current = intervalId;
                 console.log('setInterval:', intervalId);
             } else {
@@ -302,6 +297,7 @@ export default function JSblock() {
         }
         run();
     }, [isAutohdEnabled]);
+    // yt page hide to trayicon
     const [isHidetotrayEnabled, setIsHidetotrayEnabled] = useState(localStorage.getItem('isHidetotrayEnabled') === 'true');
 
     return (

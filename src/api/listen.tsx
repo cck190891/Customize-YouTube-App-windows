@@ -33,10 +33,17 @@ export function html_result_listen() {
                         tray!.setMenu(traymenu)
                     }
                 }
-
             }
         })
-        
+        controller_window.listen("tauri://F11", async (e:any) => {
+            const msg_window = Window.getByLabel(e.payload.label)!;
+            if (await msg_window.isFullscreen()) {
+                await msg_window.setFullscreen(false);
+            }else{
+                await msg_window.setFullscreen(true);
+            }
+        })
+
         controller_window.listen("Controller://show", async () => {
             if (!(await controller_window.isVisible())){
 

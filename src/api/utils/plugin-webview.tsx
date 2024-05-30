@@ -3,6 +3,7 @@ import { WebviewWindow  } from '@tauri-apps/api/webviewWindow'
 import { TauriEvent } from '@tauri-apps/api/event'
 import { tray ,traymenu} from '../trayicon'
 import { MenuItem  } from "@tauri-apps/api/menu";
+import { invoke } from '@tauri-apps/api/core';
 let new_label:string
 let label = (Math.floor(Math.random() * 1000))
 
@@ -25,6 +26,15 @@ const create_webviewwindow =async (url:string,input_label='') => {
 
         window.__TAURI_INTERNALS__.metadata.webviews.push({ windowLabel: new_label, label: new_label })
         window.__TAURI_INTERNALS__.metadata.windows.push({ label: new_label })
+
+        const F11_event = `
+            document.addEventListener('keydown', async function (event) {
+                if (event.key === 'F11' ) {
+                    window.__TAURI__.event.emit('tauri://F11',{label:'${new_label}'});
+                }
+            });
+        `
+        await invoke('do_eval', { label: new_label, jscode: F11_event });
     });
         
 
