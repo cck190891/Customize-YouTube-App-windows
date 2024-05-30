@@ -1,7 +1,59 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useRef, useState } from 'preact/hooks';
 
+async function sent_windows_info() {
 
+  window.__TAURI_INTERNALS__.metadata.windows.forEach(async window => {
+    let windows_info_code =
+    `
+    window.__TAURI__.event.emit('tauri://html-result',{label:'${window.label}',title: document.title });
+    `
+    await invoke('do_eval', { label: window.label, jscode: windows_info_code });
+  });
+
+}
+async function sent_yt_player_init() {
+  // adblock code is converted from ublock filiter
+  const xhr = `
+  if (["m.youtube.com", "music.youtube.com", "tv.youtube.com", "www.youtube.com", "youtubekids.com", "youtube-nocookie.com"].includes(window.location.host)) {
+      Object.defineProperty(window, 'ytInitialPlayerResponse', {
+          value: Object.defineProperty(window, 'ytInitialPlayerResponse', {
+              value: { playerAds: undefined }
+          })
+      });
+      Object.defineProperty(window, 'ytInitialPlayerResponse', {
+          value: Object.defineProperty(window, 'ytInitialPlayerResponse', {
+              value: { adPlacements: undefined }
+          })
+      });
+      Object.defineProperty(window, 'ytInitialPlayerResponse', {
+          value: Object.defineProperty(window, 'ytInitialPlayerResponse', {
+              value: { adSlots: undefined }
+          })
+      });
+      Object.defineProperty(window, 'playerResponse', {
+          value: Object.defineProperty(window, 'playerResponse', {
+              value: { adPlacements: undefined }
+          })
+      });
+      Object.defineProperty(window, 'playerResponse', {
+          value: Object.defineProperty(window, 'playerResponse', {
+              value: JSON.parse(JSON.stringify(window.playerResponse, (key, value) => {
+                  if (key === 'adPlacements' || key === 'playerAds' || key === 'adSlots' || key === 'important') {
+                      return undefined;
+                  }
+                  return value;
+              }))
+          })
+      });
+
+  }
+  `
+
+window.__TAURI_INTERNALS__.metadata.windows.forEach(async window => {
+await invoke('do_eval', { label: window.label, jscode: xhr });
+});
+}
 async function sent_xhr_fetch() {
         // adblock code is converted from ublock filiter
         const xhr = `
@@ -14,9 +66,8 @@ async function sent_xhr_fetch() {
           XMLHttpRequest.prototype.open = function() {
             this.addEventListener('readystatechange', function() {
               if (this.readyState === 4) {
-                const adPlacementPattern1 = /"adPlacements.*?([A-Z]"\}|"\}{2,4})\}\]\,/g;
+                const adPlacementPattern1 = /"adPlacements.*?([A-Z]"\}|"\}{2\,4})\}\]\,/;
                 const adPlacementPattern2 = /"adPlacements.*?("adSlots"|"adBreakHeartbeatParams")/gms;
-                const adSlotsPattern = /\"adSlots.*?\}\]\}\}\]\,/;
                 const urlPatterns = [
                   /playlist\\?list=/,
                   /player\\?/,
@@ -29,12 +80,11 @@ async function sent_xhr_fetch() {
                     modifiedResponseText = modifiedResponseText
                       .replace(adPlacementPattern1, '')
                       .replace(adPlacementPattern2, '$1')
-                      .replace(adSlotsPattern, '');
                   }
         
                   Object.defineProperty(this, 'responseText', { value: modifiedResponseText });
                 }
-                      }
+              }
             });
             originalOpen.apply(this, arguments);
           };
@@ -49,28 +99,25 @@ async function sent_xhr_fetch() {
             const url = response.url;
             const clone = response.clone();
         
-            const adPlacementPattern1 = /"adPlacements.*?([A-Z]"\}|"\}{2,4})\}\]\,/g;
+            const adPlacementPattern1 = /"adPlacements.*?([A-Z]"\}|"\}{2\,4})\}\]\,/
             const adSlotsPattern = /\"adSlots.*?\}\]\}\}\]\,/;
-            const reelWatchPattern = /reel_watch_sequence/;
-            const reelItemPattern = /reel_item_watch/;
-        
-            if (reelWatchPattern.test(url) || reelItemPattern.test(url) || url.includes('ads')) {
+            const urlPatterns = [
+              /playlist\\?list=/,
+              /player\\?/,
+              /watch\\?v=/,
+              /youtubei\\/v1\\/player/
+            ];
+            if (urlPatterns.some(pattern => pattern.test(this.responseURL))) {
               const responseText = await clone.text();
               let modifiedResponseText = responseText
                 .replace(adPlacementPattern1, '')
                 .replace(adSlotsPattern, '');
-              // return new Response(modifiedResponseText, {
-              //   status: clone.status,
-              //   statusText: clone.statusText,
-              //   headers: clone.headers
-              // });
-              return new Response({
+              return new Response(modifiedResponseText, {
                 status: clone.status,
                 statusText: clone.statusText,
                 headers: clone.headers
-              });
+            });
             }
-        
             return response;
           };
         }
@@ -88,50 +135,6 @@ async function sent_xhr_fetch() {
 }
 
 
-async function sent_windows_info() {
-
-  window.__TAURI_INTERNALS__.metadata.windows.forEach(async window => {
-    let windows_info_code =
-    `
-    window.__TAURI__.event.emit('tauri://html-result',{label:'${window.label}',title: document.title });
-    `
-    await invoke('do_eval', { label: window.label, jscode: windows_info_code });
-  });
-
-}
-
-async function sent_hd1080() {
-
-  window.__TAURI_INTERNALS__.metadata.windows.forEach(async window => {
-    let hd1080 =
-    `
-    "use strict";
-    const targetRes = "hd1080";
-
-    function setResolution() {
-      const player = document.getElementById("movie_player") || document.getElementsByClassName("html5-video-player")[0];
-      if (!player) return;
-  
-      const availableQualities = player.getAvailableQualityLevels();
-      if (availableQualities.includes(targetRes)) {
-        player.setPlaybackQualityRange(targetRes);
-        player.setPlaybackQuality(targetRes);
-        console.log("Resolution set to:", targetRes);
-      }
-    }
-    window.addEventListener("yt-navigate-finish", setResolution, true);
-    document.addEventListener("readystatechange", () => {
-      if (document.readyState === "complete") {
-        setResolution();
-      }
-    });
-  
-    setResolution();    
-    `
-    await invoke('do_eval', { label: window.label, jscode: hd1080 });
-  });
-
-}
 
 async function sent_disable_element() {
 
@@ -142,7 +145,6 @@ async function sent_disable_element() {
           document.querySelectorAll('ytd-ad-slot-renderer').forEach(element => element.style.display = 'none');
           document.querySelectorAll('ytd-player-legacy-desktop-watch-ads-renderer').forEach(element => element.style.display = 'none');
           document.querySelectorAll('.ytp-fullerscreen-edu-button.ytp-button').forEach(element => element.style.display = 'none');
-          // document.querySelectorAll('.ytp-title-link.yt-uix-sessionlink.ytp-title-fullerscreen-link').forEach(element => element.style.display = 'none');
           document.querySelectorAll('.ytp-chrome-top').forEach(element => element.style.display = 'none');
           
           const propertiesToUnset = [
@@ -211,7 +213,38 @@ await invoke('do_eval', { label: window.label, jscode: nonstop });
 
 
 
+async function sent_hd1080() {
 
+  window.__TAURI_INTERNALS__.metadata.windows.forEach(async window => {
+    let hd1080 =
+    `
+    "use strict";
+    const targetRes = "hd1080";
+
+    function setResolution() {
+      const player = document.getElementById("movie_player") || document.getElementsByClassName("html5-video-player")[0];
+      if (!player) return;
+  
+      const availableQualities = player.getAvailableQualityLevels();
+      if (availableQualities.includes(targetRes)) {
+        player.setPlaybackQualityRange(targetRes);
+        player.setPlaybackQuality(targetRes);
+        console.log("Resolution set to:", targetRes);
+      }
+    }
+    window.addEventListener("yt-navigate-finish", setResolution, true);
+    document.addEventListener("readystatechange", () => {
+      if (document.readyState === "complete") {
+        setResolution();
+      }
+    });
+  
+    setResolution();    
+    `
+    await invoke('do_eval', { label: window.label, jscode: hd1080 });
+  });
+
+}
 
 
 
@@ -331,3 +364,8 @@ export default function JSblock() {
         </>
     );
 }
+
+
+
+
+

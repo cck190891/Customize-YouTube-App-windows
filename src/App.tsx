@@ -18,7 +18,6 @@ function App() {
       event.preventDefault();
     }
   });
-
   document.addEventListener('contextmenu', function (event) {
     // Prevent context menu from showing up
     console.log('contextmenu:', event)
