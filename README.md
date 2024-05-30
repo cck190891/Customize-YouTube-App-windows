@@ -14,4 +14,4 @@ This is a YouTube application for Windows built using <a href="https://github.co
 <a href='https://www.paypal.com/paypalme/cck19089' className='paypal-me' target='_blank'>paypal</a>
 
 ## License
-This package is open-sourced software licensed under the MIT license.
+This package is open-sourced software licensed under the GPL-3.0 license.
