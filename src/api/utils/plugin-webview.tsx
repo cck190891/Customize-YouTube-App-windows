@@ -6,9 +6,7 @@ import { MenuItem  } from "@tauri-apps/api/menu";
 import { invoke } from '@tauri-apps/api/core';
 import {
     sent_windows_info,
-    sent_pre_init,
     sent_xhr_fetch, 
-    sent_adb_button_click, 
     sent_disable_element, 
     sent_nonstop, 
     sent_hd1080,
@@ -19,6 +17,7 @@ let new_label:string
 let label = (Math.floor(Math.random() * 1000))
 
 const create_webviewwindow =async (url:string,input_label='') => {
+    console.log('url:', url)
     if (input_label == 'Controller'){
         new_label = input_label
     }else{
@@ -34,17 +33,14 @@ const create_webviewwindow =async (url:string,input_label='') => {
     });
 
     webview_window.once('tauri://created', async function () {
-
-
+        
         window.__TAURI_INTERNALS__.metadata.webviews.push({ windowLabel: new_label, label: new_label })
         window.__TAURI_INTERNALS__.metadata.windows.push({ label: new_label })
-        
+
         await invoke('do_eval', { label: new_label, jscode: sent_windows_info(new_label) });
         await invoke('do_eval', { label: new_label, jscode: sent_f11_event(new_label) });
         if(localStorage.getItem("isAdBlockEnabled") === "true"){
-            await invoke('do_eval', { label: new_label, jscode: sent_pre_init() });
-            await invoke('do_eval', { label: new_label, jscode: sent_xhr_fetch() });
-            await invoke('do_eval', { label: new_label, jscode: sent_adb_button_click() });
+            await invoke('do_eval', { label: new_label, jscode:  sent_xhr_fetch() });
             await invoke('do_eval', { label: new_label, jscode: sent_disable_element() });
         }
         if(localStorage.getItem("isNonstopEnabled") === "true"){

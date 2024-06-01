@@ -15,7 +15,7 @@
         "width": 800,
         "height": 600,
         "label": "Controller",
-        "visible": false
+        "visible": true
       }
     ],
     "security": {

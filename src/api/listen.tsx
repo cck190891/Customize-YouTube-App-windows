@@ -5,9 +5,7 @@ import { MenuItem  } from "@tauri-apps/api/menu";
 import { invoke } from '@tauri-apps/api/core';
 import {
     sent_windows_info,
-    sent_pre_init,
     sent_xhr_fetch, 
-    sent_adb_button_click, 
     sent_disable_element, 
     sent_nonstop, 
     sent_hd1080,
@@ -47,15 +45,17 @@ export function Listen_event() {
         controller_window.listen('tauri://html-reload', async(e : any) => {
             setTimeout(async() => {
                 await invoke('do_eval', { label: e.payload.label, jscode: sent_windows_info(e.payload.label) });
-                await invoke('do_eval', { label: e.payload.label, jscode: sent_pre_init() });
                 await invoke('do_eval', { label: e.payload.label, jscode: sent_xhr_fetch() });
-                await invoke('do_eval', { label: e.payload.label, jscode: sent_adb_button_click() });
                 await invoke('do_eval', { label: e.payload.label, jscode: sent_disable_element() });
                 await invoke('do_eval', { label: e.payload.label, jscode: sent_nonstop() });
                 await invoke('do_eval', { label: e.payload.label, jscode: sent_hd1080() });
                 await invoke('do_eval', { label: e.payload.label, jscode: sent_f11_event(e.payload.label) });
                 await invoke('do_eval', { label: e.payload.label, jscode: sent_MutationObserver_event(e.payload.label) });
-            }, 1000);
+                setInterval(async() => {
+                    await invoke('do_eval', { label: e.payload.label, jscode: sent_nonstop() });
+                    await invoke('do_eval', { label: e.payload.label, jscode: sent_hd1080() });
+                }, 30000);
+            }, 500);
         })
         controller_window.listen("tauri://F11", async (e:any) => {
             const msg_window = Window.getByLabel(e.payload.label)!;
@@ -65,29 +65,22 @@ export function Listen_event() {
                 await msg_window.setFullscreen(true);
             }
         })        
-        
+
         controller_window.listen("tauri://mutationObserver", async (e:any) => {
-            
             if(localStorage.getItem("isAdBlockEnabled") === "true"){
-                await invoke('do_eval', { label: e.payload.label, jscode: sent_adb_button_click() });
                 await invoke('do_eval', { label: e.payload.label, jscode: sent_disable_element() });
             }
-            if(localStorage.getItem("isNonstopEnabled") === "true"){
-                await invoke('do_eval', { label: e.payload.label, jscode: sent_nonstop() });
-            }
-            if(localStorage.getItem("isAutohdEnabled") === "true"){
-                await invoke('do_eval', { label: e.payload.label, jscode: sent_hd1080() });
-            }
-
         })
 
-        controller_window.listen("Controller://show", async () => {
-            if (!(await controller_window.isVisible())){
-
+        controller_window.listen("Controller://show", async (e:any) => {
+            console.log('e.payload.args:', e.payload.args)
+            if (!(e.payload.args)){
                 traymenu!.remove(Menu_showcontroller!);
                 traymenu!.insert(Menu_hidecontroller!,(await traymenu!.items()).length-1);
                 tray!.setMenu(traymenu)
             }
+
+            
         })
         controller_window.listen("Controller://create", async () => {
             if (!(await controller_window.isVisible())){
@@ -97,6 +90,11 @@ export function Listen_event() {
                 tray!.setMenu(traymenu)
             }
         })
+        controller_window.listen("tauri://testmsg", async (e:any) => {
+            console.log('tauri://testmsg:', e.payload.status)
+        })
+
+
         controller_window.listen(TauriEvent.WINDOW_RESIZED, async (e:any) => {
             if (e.payload.height == 0 && e.payload.width == 0 ){
                 console.log('TauriEvent.WINDOW_RESIZED controller')

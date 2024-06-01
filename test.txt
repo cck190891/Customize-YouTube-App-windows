@@ -1,0 +1,35 @@
+題目
+Determine all the pairs of positive real numbers $(a, b)$ with $a < b$ such that the following series $$\sum_{k=1}^{\infty} \int_a^b\{x\}^k dx =\int_a^b\{x\} dx + \int_a^b\{x\}^2 dx + \int_a^b\{x\}^3 dx + \cdots$$ is convergent and determine its value in function of $a$ and $b$.
+
+[b]Note: [/b] $\{x\} = x - \lfloor x \rfloor$ denotes the fractional part of $x$.
+第1留言
+You can swap the integral and summation by tonelli's theorem. From there it's not too bad.
+第2留言
+If we first switch the order of the integral and the summation, we obtain an infinite geometric series that sums to
+
+{x}/(1-{x}) = -1 + 1/(1-{x}) = -1 + 1/[(1+floor(x)) - x] (i)
+
+CASE I (0 < a < b < 1):
+If we consider 0 < a < b < 1, then the integral of (i) over (0, 1) evaluates to:
+
+-x - ln(1 - x)  =>  [b][u][i](a - b) + ln[(1 - a)/(1 - b)] [/i][/u][/b](ii)
+
+which is convergent.  
+
+CASE II (N <= a < b < N+1):
+If we consider N <= a < b < N+1 for any positive integer N, then the integral of (i) over [N, N+1) evaluates to:
+
+-x - ln(1 + N - x) => [b][u][i](a - b) + ln[(1 + N - a)/(1 + N -b)][/i][/u][/b] (iii)
+
+which is also convergent.
+
+CASE III (N <= a < b < N+k):
+If we consider N <= a < b < N+k (where N is a positive integer, and k is a positive integer greater than unity), then the integral of (i) over [N, N+1) U [N+1, N+2) U ..... U [N+(k-1), N+k) evaluates to:
+
+(a - b) + ln[((1+N)-a)/((1+N)-(1+N))] + ln[((2+N)-(N+1))/((2+N)-(N+2))] + ... + ln[((N+k)-(N+k-1)/((N+k)-b)];
+
+or (a - b) + ln[((1+N)-a)/0] + ln[((2+N)-(N+1))/0] + ... + ln[1/((N+k)-b)];
+
+which is divergent.
+
+Hence, we require positive integers a, b (a < b) such that [a, b] lies within the intervals (0, 1) U [N, N+1) (N is a positive integer).

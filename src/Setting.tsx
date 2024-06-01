@@ -54,21 +54,37 @@ export default function Setting() {
         }
         run();
     }, [isHidetotrayEnabled]);
-    
+
+    const [isScriptpathEnabled, setIsScriptpathEnabled] = useState(localStorage.getItem('isScriptpathEnabled') ? localStorage.getItem('isScriptpathEnabled'): "https://raw.githubusercontent.com/TheRealJoelmatic/RemoveAdblockThing/main/Youtube-Ad-blocker-Reminder-Remover.user.js");
+    useEffect(() => {
+      async function run() {
+          localStorage.setItem('isScriptpathEnabled', isScriptpathEnabled!);
+          if (isScriptpathEnabled == "") {
+              setIsScriptpathEnabled("https://raw.githubusercontent.com/TheRealJoelmatic/RemoveAdblockThing/main/Youtube-Ad-blocker-Reminder-Remover.user.js") 
+            }
+        }
+        run();
+    }, [isScriptpathEnabled]);
     return (
         <>
-            <p>adb(need reload)</p>
+            <p>adb(need reopen)</p>
             <input
                 type="checkbox"
                 defaultChecked={isAdBlockEnabled}
                 onChange={(e) => setIsAdBlockEnabled((e.target as HTMLInputElement).checked)}
             />
+            {isAdBlockEnabled && <><p>// From : https://github.com/TheRealJoelmatic/RemoveAdblockThing/tree/main</p>
+            <p>// https://github.com/TheRealJoelmatic/RemoveAdblockThing/blob/main/Youtube-Ad-blocker-Reminder-Remover.user.js</p>
+            <p>u can use self cdn file
+            <input type="text"   value={isScriptpathEnabled!}  onChange={(e) => setIsScriptpathEnabled((e.target as HTMLInputElement).value)}></input></p>
+
             <p>Nonstop</p>
             <input
                 type="checkbox"
                 defaultChecked={isNonstopEnabled}
                 onChange={(e) => setIsNonstopEnabled((e.target as HTMLInputElement).checked)}
-            />
+            /></>
+            }
 
             <p>auto 1080p</p>
             <input
@@ -83,6 +99,7 @@ export default function Setting() {
                 defaultChecked={isHidetotrayEnabled}
                 onChange={(e) => setIsHidetotrayEnabled((e.target as HTMLInputElement).checked)}
             />
+
         </>
     );
 }
